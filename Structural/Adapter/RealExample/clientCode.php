@@ -4,6 +4,8 @@ namespace paterni\Structural\Adapter\RealExample;
 
 /**
  * The client code can work with any class that follows the Target interface.
+ *
+ * @param Notification $notification
  */
 function clientCode(Notification $notification)
 {

@@ -10,9 +10,21 @@ namespace paterni\Structural\Adapter\RealExample;
  */
 class SlackNotification implements Notification
 {
+    /**
+     * @var SlackApi
+     */
     private $slack;
+    /**
+     * @var string
+     */
     private $chatId;
 
+    /**
+     * SlackNotification constructor.
+     *
+     * @param SlackApi $slack
+     * @param string $chatId
+     */
     public function __construct(SlackApi $slack, string $chatId)
     {
         $this->slack = $slack;
@@ -22,6 +34,11 @@ class SlackNotification implements Notification
     /**
      * An Adapter is not only capable of adapting interfaces, but it can also
      * convert incoming data to the format required by the Adaptee.
+     *
+     * @param string $title
+     * @param string $message
+     *
+     * @return void
      */
     public function send(string $title, string $message): void
     {
