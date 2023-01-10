@@ -8,13 +8,24 @@ namespace paterni\Structural\Adapter\Theory;
  */
 class Adapter extends Target
 {
+    /**
+     * @var Adaptee $adaptee
+     */
     private $adaptee;
 
+    /**
+     * Adapter constructor.
+     *
+     * @param Adaptee $adaptee
+     */
     public function __construct(Adaptee $adaptee)
     {
         $this->adaptee = $adaptee;
     }
 
+    /**
+     * @return string
+     */
     public function request(): string
     {
         return "Adapter: (TRANSLATED) " . strrev($this->adaptee->specificRequest());
