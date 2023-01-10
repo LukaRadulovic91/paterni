@@ -10,7 +10,7 @@ namespace paterni\Creational\Builder\RealExample;
  */
 interface SQLQueryBuilder
 {
-    public function select(string $table, array $fields): SQLQueryBuilder;
+    public function select(string $table, array $fields): SQLQueryBduilder;
 
     public function where(string $field, string $value, string $operator = '='): SQLQueryBuilder;
 
