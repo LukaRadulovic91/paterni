@@ -9,7 +9,7 @@ function clientCode(Component $component)
 {
     // ...
 
-    echo "RESULT: " . $component->operation();
+    echo "RESULT: " . $component->operation(); 
 
     // ...
 }
