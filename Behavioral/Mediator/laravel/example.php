@@ -1,82 +1,66 @@
 <?php
 
 
-namespace App\Mediator;
+namespace App\Mediators;
 
-interface ChatMediatorInterface
+use App\Publishers\MessagePublisher;
+use App\Subscribers\MessageSubscriber;
+
+class MessageMediator
 {
-    public function sendMessage(string $message, string $sender): void;
+    protected $subscribers = [];
 
-    public function addUser(User $user): void;
-}
-
-
-namespace App\Mediator;
-
-class ChatRoom implements ChatMediatorInterface
-{
-    private $users = [];
-
-    public function sendMessage(string $message, string $sender): void
+    public function subscribe(MessageSubscriber $subscriber)
     {
-        foreach ($this->users as $user) {
-            if ($user->getName() !== $sender) {
-                $user->receiveMessage($message);
-            }
+        $this->subscribers[] = $subscriber;
+    }
+
+    public function publish(MessagePublisher $publisher, $message)
+    {
+        foreach ($this->subscribers as $subscriber) {
+            $subscriber->handleMessage($message);
         }
     }
-
-    public function addUser(User $user): void
-    {
-        $this->users[] = $user;
-    }
 }
 
 
-namespace App\Mediator;
+namespace App\Publishers;
 
-class User
+use App\Mediators\MessageMediator;
+
+class MessagePublisher
 {
-    private $name;
-    private $chatMediator;
+    protected $mediator;
 
-    public function __construct(string $name, ChatMediatorInterface $chatMediator)
+    public function __construct(MessageMediator $mediator)
     {
-        $this->name = $name;
-        $this->chatMediator = $chatMediator;
+        $this->mediator = $mediator;
     }
 
-    public function getName(): string
+    public function publish($message)
     {
-        return $this->name;
-    }
-
-    public function send(string $message): void
-    {
-        $this->chatMediator->sendMessage($message, $this->name);
-    }
-
-    public function receiveMessage(string $message): void
-    {
-        echo $this->name . ' received message: ' . $message . "\n";
+        // Publish message to mediator
+        $this->mediator->publish($this, $message);
     }
 }
 
 
-namespace App\Mediator;
+namespace App\Subscribers;
 
-$mediator = new ChatRoom();
+class EmailSubscriber implements MessageSubscriber
+{
+    public function handleMessage($message)
+    {
+        // Handle email notification
+    }
+}
 
-$user1 = new User('Alice', $mediator);
-$user2 = new User('Bob', $mediator);
-$user3 = new User('Charlie', $mediator);
+$messageMediator = new MessageMediator();
+$messagePublisher = new MessagePublisher($messageMediator);
 
-$mediator->addUser($user1);
-$mediator->addUser($user2);
-$mediator->addUser($user3);
+$emailSubscriber = new EmailSubscriber();
+$messageMediator->subscribe($emailSubscriber);
 
-$user1->send('Hello, everyone!');
-$user2->send('Hi, Alice!');
 
 ///Mediator pattern se koristi kada imate složene interakcije
 ///  između objekata i želite da izbegnete povezivanje objekata direktno međusobno,
