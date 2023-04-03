@@ -18,3 +18,85 @@
 // upita nad bazom podataka korak po korak. Na primer, možemo kreirati
 // QueryBuilder objekat, dodati filtere i sortiranja, a zatim izvršiti upit
 // i dobiti rezultat.
+
+
+// Kreiramo interfejs Builder koji će biti implementiran od strane svih konkretnih buildera
+interface Builder
+{
+    public function setCustomer(string $name, string $address): Builder;
+
+    public function addProduct(int $id, int $quantity): Builder;
+
+    public function get(): Order;
+}
+
+// Kreiramo konkretni Builder koji implementira Builder interfejs i gradi objekte klase Order
+class OrderBuilder implements Builder
+{
+    private $order;
+
+    public function __construct()
+    {
+        $this->order = new Order();
+    }
+
+    public function setCustomer(string $name, string $address): Builder
+    {
+        $this->order->setCustomer($name, $address);
+        return $this;
+    }
+
+    public function addProduct(int $id, int $quantity): Builder
+    {
+        $this->order->addProduct($id, $quantity);
+        return $this;
+    }
+
+    public function get(): Order
+    {
+        return $this->order;
+    }
+}
+
+// Kreiramo klasu koju gradimo
+class Order
+{
+    private $customerName;
+    private $customerAddress;
+    private $products = [];
+
+    public function setCustomer(string $name, string $address)
+    {
+        $this->customerName = $name;
+        $this->customerAddress = $address;
+    }
+
+    public function addProduct(int $id, int $quantity)
+    {
+        $this->products[$id] = $quantity;
+    }
+
+    public function getCustomerName(): string
+    {
+        return $this->customerName;
+    }
+
+    public function getCustomerAddress(): string
+    {
+        return $this->customerAddress;
+    }
+
+    public function getProducts(): array
+    {
+        return $this->products;
+    }
+}
+
+// Koristimo Builder za kreiranje objekta klase Order
+$order = (new OrderBuilder())
+    ->setCustomer('Marko Markovic', 'Neka adresa 123')
+    ->addProduct(1, 2)
+    ->addProduct(3, 1)
+    ->get();
+
+
